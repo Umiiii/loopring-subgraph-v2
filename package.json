@@ -1,18 +1,18 @@
 {
-  "name": "loopring-subgraph",
-  "version": "0.1.0",
+  "name": "degate",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ <subgraph-name>",
-    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ <subgraph-name>",
-    "create-local": "graph create --node http://localhost:8020/ <subgraph-name>",
-    "remove-local": "graph remove --node http://localhost:8020/ <subgraph-name>",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 <subgraph-name>"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate",
+    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate",
+    "create-local": "graph create --node http://localhost:8020/ degate/degate",
+    "remove-local": "graph remove --node http://localhost:8020/ degate/degate",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 degate/degate"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.29.0",
-    "@graphprotocol/graph-ts": "^0.26.0"
+    "@graphprotocol/graph-cli": "^0.59.0",
+    "@graphprotocol/graph-ts": "^0.34.0"
   }
 }
