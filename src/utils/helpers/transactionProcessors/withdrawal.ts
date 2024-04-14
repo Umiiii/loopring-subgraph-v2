@@ -22,7 +22,6 @@ import {
   compoundIdToSortableDecimal,
   getAndUpdateAccountTokenBalanceDailyData,
   getAndUpdateAccountTokenBalanceWeeklyData,
-  getOrCreateAccountNFTSlot
 } from "../index";
 import {
   TRANSACTION_WITHDRAWAL_TYPENAME,
@@ -198,63 +197,7 @@ export function processWithdrawal(
     feeTokenCheck != null ? (feeTokenCheck as Token).id : null;
   transaction.accounts = accounts;
 
-  if (isNFT(transaction.tokenID)) {
-    proxy.withdrawalNFTCount = proxy.withdrawalNFTCount + BIGINT_ONE;
-    block.withdrawalNFTCount = block.withdrawalNFTCount + BIGINT_ONE;
-
-    let nfts = new Array<String>();
-    let slots = new Array<String>();
-
-    let coercedTransaction = changetype<WithdrawalNFT>(transaction);
-    // NFT withdrawal
-    let slot = getOrCreateAccountNFTSlot(
-      coercedTransaction.fromAccountID,
-      coercedTransaction.tokenID,
-      coercedTransaction.id
-    );
-    slot.balance = slot.balance.minus(coercedTransaction.amount);
-    let nftIDBefore = slot.nft;
-    if (coercedTransaction.type == 2 || slot.balance <= BIGINT_ZERO) {
-      slot.nft = null;
-    }
-    slot.save();
-
-    if (transaction.valid) {
-      // Pay fee
-      let feeToken = feeTokenCheck as Token;
-      let accountTokenFeeBalance = getOrCreateAccountTokenBalance(
-        accountId,
-        feeToken.id
-      );
-      accountTokenFeeBalance.balance = accountTokenFeeBalance.balance.minus(
-        transaction.fee
-      );
-
-      accountTokenFeeBalance.save();
-      tokenBalances.push(accountTokenFeeBalance.id);
-
-      getAndUpdateAccountTokenBalanceDailyData(
-        accountTokenFeeBalance,
-        block.timestamp
-      );
-      getAndUpdateAccountTokenBalanceWeeklyData(
-        accountTokenFeeBalance,
-        block.timestamp
-      );
-
-      slots.push(slot.id);
-      if(nftIDBefore != null) {
-        nfts.push(nftIDBefore as String);
-      }
-    }
-
-    coercedTransaction.tokenBalances = tokenBalances;
-    coercedTransaction.slots = slots;
-    coercedTransaction.nfts = nfts;
-    coercedTransaction.slot = slot.id;
-    coercedTransaction.typename = TRANSACTION_WITHDRAWAL_NFT_TYPENAME;
-    coercedTransaction.save();
-  } else {
+   
     proxy.withdrawalCount = proxy.withdrawalCount + BIGINT_ONE;
     block.withdrawalCount = block.withdrawalCount + BIGINT_ONE;
     // ERC20 withdrawal
@@ -331,5 +274,5 @@ export function processWithdrawal(
 
     transaction.tokenBalances = tokenBalances;
     transaction.save();
-  }
+  
 }

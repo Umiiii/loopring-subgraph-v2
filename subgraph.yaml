@@ -40,7 +40,7 @@ dataSources:
       eventHandlers:
         - event: Upgraded(indexed address)
           handler: handleUpgraded
-        - event: TokenRegistered(address,uint16)
+        - event: TokenRegistered(address,uint32)
           handler: handleTokenRegistered
       callHandlers:
         - function: submitBlocks((uint8,uint16,uint8,bytes,uint256[8],bool,bytes,bytes)[])

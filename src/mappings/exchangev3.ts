@@ -23,7 +23,8 @@ export function handleTokenRegistered(event: TokenRegistered): void {
 
   token.exchange = proxy.currentImplementation as String;
   proxy.tokenCount = proxy.tokenCount.plus(BIGINT_ONE);
-
+  log.debug("Token registered: {} {}", [token.tokenId, token.tokenAddress]);
+  
   token.save();
   proxy.save();
 }

@@ -24,7 +24,6 @@ import {
   compoundIdToSortableDecimal,
   getAndUpdateAccountTokenBalanceDailyData,
   getAndUpdateAccountTokenBalanceWeeklyData,
-  getOrCreateAccountNFTSlot
 } from "../index";
 import {
   TRANSACTION_TRANSFER_TYPENAME,
@@ -207,93 +206,7 @@ export function processTransfer(
 
   let tokenBalances = new Array<String>();
 
-  if (isNFT(transaction.tokenID)) {
-    let coercedTransaction = changetype<TransferNFT>(transaction);
-    // NFT Transfer
-    // Fee token balance calculation
-    let fromAccountTokenFeeBalance = getOrCreateAccountTokenBalance(
-      fromAccountId,
-      feeToken.id
-    );
-    fromAccountTokenFeeBalance.balance = fromAccountTokenFeeBalance.balance.minus(
-      coercedTransaction.fee
-    );
-
-    fromAccountTokenFeeBalance.save();
-    tokenBalances.push(fromAccountTokenFeeBalance.id);
-
-    getAndUpdateAccountTokenBalanceDailyData(
-      fromAccountTokenFeeBalance,
-      block.timestamp
-    );
-    getAndUpdateAccountTokenBalanceWeeklyData(
-      fromAccountTokenFeeBalance,
-      block.timestamp
-    );
-
-    // Operator update
-    let operatorTokenFeeBalance = getOrCreateAccountTokenBalance(
-      intToString(block.operatorAccountID),
-      feeToken.id
-    );
-    operatorTokenFeeBalance.balance = operatorTokenFeeBalance.balance.plus(
-      coercedTransaction.fee
-    );
-    tokenBalances.push(operatorTokenFeeBalance.id);
-
-    operatorTokenFeeBalance.save();
-
-    let nfts = new Array<String>();
-    let slots = new Array<String>();
-
-    // NFT transfer logic
-    let fromSlot = getOrCreateAccountNFTSlot(
-      coercedTransaction.accountFromID,
-      coercedTransaction.tokenID,
-      coercedTransaction.id
-    );
-    let toSlot = getOrCreateAccountNFTSlot(
-      coercedTransaction.accountToID,
-      coercedTransaction.toTokenID,
-      coercedTransaction.id
-    );
-
-    slots.push(fromSlot.id);
-    slots.push(toSlot.id);
-
-    fromSlot.balance = fromSlot.balance.minus(coercedTransaction.amount);
-    toSlot.balance = toSlot.balance.plus(coercedTransaction.amount);
-
-    toSlot.nft = fromSlot.nft;
-
-    if(toSlot.nft != null) {
-      nfts.push(toSlot.nft as String);
-    }
-
-    if (fromSlot.balance <= BIGINT_ZERO) {
-      fromSlot.nft = null;
-    }
-
-    toSlot.save();
-    fromSlot.save();
-
-    coercedTransaction.fromSlot = fromSlot.id;
-    coercedTransaction.toSlot = toSlot.id;
-
-    coercedTransaction.feeToken = feeToken.id;
-    coercedTransaction.tokenBalances = tokenBalances;
-    coercedTransaction.accounts = accounts;
-    coercedTransaction.slots = slots;
-    coercedTransaction.nfts = nfts;
-
-    coercedTransaction.fromAccount = fromAccountId;
-    coercedTransaction.toAccount = toAccountId;
-    coercedTransaction.typename = TRANSACTION_TRANSFER_NFT_TYPENAME;
-    coercedTransaction.save();
-
-    proxy.transferNFTCount = proxy.transferNFTCount.plus(BIGINT_ONE);
-    block.transferNFTCount = block.transferNFTCount.plus(BIGINT_ONE);
-  } else {
+ 
     // ERC20 Transfer
     let token = getToken(intToString(transaction.tokenID)) as Token;
 
@@ -436,5 +349,5 @@ export function processTransfer(
       coercedTransaction.typename = TRANSACTION_REMOVE_TYPENAME;
       coercedTransaction.save();
     }
-  }
+  
 }
