@@ -87,12 +87,13 @@ export function processDeposit(
   offset += 20;
   transaction.toAccountID = extractInt(data, offset, 4);
   offset += 4;
-  transaction.tokenID = extractInt(data, offset, 2);
+  transaction.tokenID = extractInt(data, offset, 4);
   offset += 4;
-  transaction.amount = extractBigInt(data, offset, 19);
+  transaction.amount = extractBigInt(data, offset, 31);
   offset += 31;
 
   let accountId = intToString(transaction.toAccountID);
+  log.debug("processDeposit: account address {}", [transaction.to]);
   log.debug("processDeposit: account ID {}", [accountId]);
   log.debug("processDeposit: token ID {}", [transaction.tokenID.toString()]);
   log.debug("processDeposit: amount {}", [transaction.amount.toString()]);
@@ -100,40 +101,40 @@ export function processDeposit(
   log.debug("processDeposit: block ID {}", [block.id]);
   log.debug("processDeposit: proxy ID {}", [proxy.id]);
   log.debug("processDeposit: transaction ID {}", [transaction.id]);
-  // let token = getToken(intToString(transaction.tokenID)) as Token;
-  // let tokenBalances = new Array<String>();
+  let token = getToken(intToString(transaction.tokenID)) as Token;
+  let tokenBalances = new Array<String>();
 
-  // createIfNewAccount(
-  //   transaction.toAccountID,
-  //   transaction.id,
-  //   transaction.to,
-  //   proxy
-  // );
+  createIfNewAccount(
+    transaction.toAccountID,
+    transaction.id,
+    transaction.to,
+    proxy
+  );
 
-  // let accounts = new Array<String>();
-  // accounts.push(accountId);
+  let accounts = new Array<String>();
+  accounts.push(accountId);
 
-  // let accountTokenBalance = getOrCreateAccountTokenBalance(accountId, token.id);
-  // accountTokenBalance.balance = accountTokenBalance.balance.plus(
-  //   transaction.amount
-  // );
+  let accountTokenBalance = getOrCreateAccountTokenBalance(accountId, token.id);
+  accountTokenBalance.balance = accountTokenBalance.balance.plus(
+    transaction.amount
+  );
 
-  // tokenBalances.push(accountTokenBalance.id);
+  tokenBalances.push(accountTokenBalance.id);
 
-  // transaction.toAccount = accountId;
-  // transaction.token = token.id;
-  // transaction.tokenBalances = tokenBalances;
-  // transaction.accounts = accounts;
+  transaction.toAccount = accountId;
+  transaction.token = token.id;
+  transaction.tokenBalances = tokenBalances;
+  transaction.accounts = accounts;
 
-  // getAndUpdateAccountTokenBalanceDailyData(
-  //   accountTokenBalance,
-  //   block.timestamp
-  // );
-  // getAndUpdateAccountTokenBalanceWeeklyData(
-  //   accountTokenBalance,
-  //   block.timestamp
-  // );
+  getAndUpdateAccountTokenBalanceDailyData(
+    accountTokenBalance,
+    block.timestamp
+  );
+  getAndUpdateAccountTokenBalanceWeeklyData(
+    accountTokenBalance,
+    block.timestamp
+  );
 
-  // accountTokenBalance.save();
-  // transaction.save();
+  accountTokenBalance.save();
+  transaction.save();
 }
