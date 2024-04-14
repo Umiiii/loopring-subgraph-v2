@@ -5,11 +5,11 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate",
-    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate",
-    "create-local": "graph create --node http://localhost:8020/ degate/degate",
-    "remove-local": "graph remove --node http://localhost:8020/ degate/degate",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 degate/degate"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate-holesky",
+    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate-holesky",
+    "create-local": "graph create --node http://localhost:8020/ degate/degate-holesky",
+    "remove-local": "graph remove --node http://localhost:8020/ degate/degate-holesky",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 degate/degate-holesky"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.59.0",
