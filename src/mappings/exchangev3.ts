@@ -17,13 +17,13 @@ import { BIGINT_ZERO, BIGINT_ONE } from "../utils/constants";
 import { DEFAULT_DECIMALS, toDecimal } from "../utils/decimals";
 
 export function handleTokenRegistered(event: TokenRegistered): void {
-  let tokenId = intToString(changetype<i32>(event.params.tokenId));
+  let tokenId = event.params.tokenId.toString();
   let token = getOrCreateToken(tokenId, event.params.token);
   let proxy = getProxy();
 
   token.exchange = proxy.currentImplementation as String;
   proxy.tokenCount = proxy.tokenCount.plus(BIGINT_ONE);
-  log.debug("Token {} registered: {}, address {}", [token.id, token.symbol, token.address.toHexString()]);
+  log.debug("TokenId{}, -> {} registered: {}, address {}", [tokenId, token.id, token.symbol, token.address.toHexString()]);
   
   token.save();
   proxy.save();

@@ -1,5 +1,9 @@
 import { BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
+export function bigIntToString(value: BigInt): String {
+  return value.toString();
+}
+
 export function intToString(value: i32): String {
   return BigInt.fromI32(value).toString();
 }
