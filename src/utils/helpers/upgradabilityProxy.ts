@@ -20,7 +20,6 @@ export function getProxy(): Proxy {
     proxy.accountUpdateCount = BIGINT_ZERO;
     proxy.signatureVerificationCount = BIGINT_ZERO;
     proxy.userCount = BIGINT_ZERO;
-    proxy.poolCount = BIGINT_ZERO;
 
     proxy.save();
   }

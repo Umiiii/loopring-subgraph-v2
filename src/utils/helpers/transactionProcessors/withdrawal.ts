@@ -4,10 +4,9 @@ import {
   Block,
   Token,
   User,
-  Pool,
   Proxy
 } from "../../../../generated/schema";
-import { BigInt, Address, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, Address, Bytes, log } from "@graphprotocol/graph-ts";
 import {
   extractData,
   extractBigInt,
@@ -129,7 +128,7 @@ export function processWithdrawal(
   transaction.data = data;
   transaction.block = block.id;
 
-  let offset = 1;
+  let offset = 0;
 
   transaction.type = extractInt(data, offset, 1);
   offset += 1;
@@ -137,18 +136,18 @@ export function processWithdrawal(
   offset += 20;
   transaction.fromAccountID = extractInt(data, offset, 4);
   offset += 4;
-  transaction.tokenID = extractInt(data, offset, 2);
-  offset += 2;
-  transaction.amount = extractBigInt(data, offset, 12);
-  offset += 12;
-  transaction.feeTokenID = extractInt(data, offset, 2);
-  offset += 2;
+  transaction.tokenID = extractInt(data, offset, 4);
+  offset += 4;
+  transaction.feeTokenID = extractInt(data, offset, 4);
+  offset += 4;
   transaction.fee = extractBigIntFromFloat(data, offset, 2, 5, 11, 10);
   offset += 2;
   transaction.storageID = extractInt(data, offset, 4);
   offset += 4;
   transaction.onchainDataHash = extractData(data, offset, 20);
   offset += 20;
+
+  transaction.amount = BIGINT_ZERO; // Withdrawals don't have amounts
 
   transaction.valid = transaction.type != 3;
 
@@ -160,6 +159,10 @@ export function processWithdrawal(
   // Will have to use check steps in case invalid transactions have invalid tokens
   let feeTokenCheck = getToken(intToString(transaction.feeTokenID));
 
+  log.debug("processWithdrawal: type {}, from {}, from account ID {}, token ID {}, fee token ID {}, fee {}, storage ID {}, onchain data hash {}, valid {}, account ID {}, fee token ID {}", 
+  [transaction.type.toString(), transaction.from, transaction.fromAccountID.toString(), 
+    transaction.tokenID.toString(), transaction.feeTokenID.toString(), transaction.fee.toString(), 
+    transaction.storageID.toString(), transaction.onchainDataHash, transaction.valid.toString(), accountId, transaction.feeTokenID.toString()]);
   createIfNewAccount(
     transaction.fromAccountID,
     transaction.id,

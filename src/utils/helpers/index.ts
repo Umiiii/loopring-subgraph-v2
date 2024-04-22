@@ -13,7 +13,6 @@ export {
 
 export {
   getOrCreateUser,
-  getOrCreatePool,
   getOrCreateAccountTokenBalance,
   getProtocolAccount,
   createIfNewAccount,

@@ -47,8 +47,6 @@ type Proxy @entity {
   "Total amount of unique User entities"
   userCount: BigInt!
 
-  "Total amount of unique Pool entities"
-  poolCount: BigInt!
 }
 
 type Exchange @entity {
@@ -145,6 +143,9 @@ type Block @entity {
   "Transaction hash for the L1 Transaction where the L2 Block was submitted"
   txHash: String!
 
+  "Exhange Address"
+  exchange: String!
+  
   "Amount of gas limit used"
   gasLimit: BigInt!
 
@@ -175,13 +176,20 @@ type Block @entity {
   offchainData: Bytes!
 
   # Parsed data from block
-  "Protocol fee applied to the 'taker' for L2 transactions within this block"
-  protocolFeeTakerBips: Int!
-  "Protocol fee applied to the 'maker' for L2 transactions within this block"
-  protocolFeeMakerBips: Int!
+  "Protocol fee applied for L2 transactions within this block"
+  protocolFeeBips: Int!
   numConditionalTransactions: Int!
   "Account ID for the operator of this L2 Block"
   operatorAccountID: Int!
+
+  "Deposit Size"
+  depositSize: Int!
+
+  "AccountUpdateSize"
+  accountUpdateSize: Int!
+
+  "Withdraw Size"
+  withdrawSize: Int!
 
   "Account entity for the operator of this L2 Block"
   operatorAccount: Account!
@@ -285,37 +293,6 @@ type User implements Account @entity {
   slots: [AccountNFTSlot!]! @derivedFrom(field: "account")
 }
 
-type Pool implements Account @entity {
-  "Internal ID used in the L2 transactions"
-  id: ID!
-
-  "Same as ID but expressed as a BigInt for sorting purposes"
-  internalID: BigInt!
-
-  address: Bytes!
-
-  feeBipsAMM: Int
-
-  balances: [AccountTokenBalance!]! @derivedFrom(field: "account")
-
-  "L2 transaction internalID where the account was first created and linked to an address. Useful for sorting and filtering purposes"
-  createdAt: BigDecimal!
-
-  "L2 transaction internalID that last updated the account entity. Useful for sorting and filtering purposes"
-  lastUpdatedAt: BigDecimal!
-
-  "L2 transaction where the account was first created and linked to an address"
-  createdAtTransaction: Transaction!
-
-  "L2 transaction that last updated the account entity"
-  lastUpdatedAtTransaction: Transaction!
-
-  "L2 transactions that involved this account"
-  transactions: [Transaction!]! @derivedFrom(field: "accounts")
-
-  "List of all the AccountNFTSlot entities that this account has. Those slots can be empty but will only exist if they held an NFT at some point."
-  slots: [AccountNFTSlot!]! @derivedFrom(field: "account")
-}
 
 type ProtocolAccount implements Account @entity {
   "ID is always 0 since there's only a single ProtocolAccount and uses the reserved id 0"
@@ -431,16 +408,9 @@ enum TransactionType {
   Swap
   OrderbookTrade
   AccountUpdate
-  AmmUpdate
   SignatureVerification
-  MintNFT
-  DataNFT
   Add
   Remove
-  TransferNFT
-  WithdrawalNFT
-  TradeNFT
-  SwapNFT
 }
 
 interface Transaction {
@@ -498,6 +468,7 @@ type Deposit implements Transaction @entity {
 
   block: Block!
 
+  type: Int!
   "Account entity that deposited the tokens"
   toAccount: Account!
 
@@ -754,9 +725,6 @@ type Add implements Transaction @entity {
   "Account entity that triggered the addition of liquidity from the pool"
   account: Account!
 
-  "Pool entity where the liquidity was added"
-  pool: Pool!
-
   "Token entity with information about the token transfered"
   token: Token!
 
@@ -807,9 +775,6 @@ type Remove implements Transaction @entity {
 
   "Account entity that triggered the removal of liquidity from the pool"
   account: Account!
-
-  "Pool entity where the liquidity was removed"
-  pool: Pool!
 
   "Token entity with information about the token transfered"
   token: Token!
@@ -967,8 +932,6 @@ type Swap implements Transaction @entity {
 
   "Account that swapped the tokens"
   account: Account!
-  "AMM Pool that facilitated the swap"
-  pool: Pool!
 
   "Token A. Supplied by Account A"
   tokenA: Token!
@@ -1295,38 +1258,6 @@ type AccountUpdate implements Transaction @entity {
   publicKey: String!
   "[RAW L2 DATA] Nonce"
   nonce: Int!
-
-  tokenBalances: [AccountTokenBalance!]
-
-  accounts: [Account!]
-}
-
-type AmmUpdate implements Transaction @entity {
-  id: ID!
-
-  "Explicit copy of __typename to make it usable when filtering"
-  typename: TransactionType!
-
-  "ID represented as a BigDecimal for sorting purposes"
-  internalID: BigDecimal!
-
-  data: String!
-
-  block: Block!
-
-  "Pool account entity updated in this transaction"
-  pool: Pool!
-
-  # Raw data parsed from the L2 data
-  "[RAW L2 DATA] Address of the pool account updated"
-  owner: String!
-  "[RAW L2 DATA] Account ID of the pool account updated"
-  accountID: Int!
-  tokenID: Int!
-  feeBips: Int!
-  tokenWeight: BigInt!
-  nonce: Int!
-  balance: BigInt!
 
   tokenBalances: [AccountTokenBalance!]
 

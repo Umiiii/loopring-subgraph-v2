@@ -2,7 +2,6 @@ import {
   SignatureVerification,
   Block,
   User,
-  Pool,
   Proxy
 } from "../../../../generated/schema";
 import { BigInt, Address, Bytes } from "@graphprotocol/graph-ts";

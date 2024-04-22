@@ -93,7 +93,8 @@ function handleSubmitBlocks(
     block.proof = blockData.proof;
     block.storeBlockInfoOnchain = blockData.storeBlockInfoOnchain;
     block.offchainData = blockData.offchainData;
-
+    log.debug("blockType {}, blockSize {}, blockVersion {}, data {}, storeBlockInfoOnchain {}", 
+    [block.blockType.toString(), block.blockSize.toString(), block.blockVersion.toString(), block.data, block.storeBlockInfoOnchain.toString()]);
     block = processBlockData(block as Block, proxy as Proxy);
 
     block.save();

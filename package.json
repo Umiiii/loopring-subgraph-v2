@@ -5,14 +5,15 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate-holesky",
-    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate-holesky",
-    "create-local": "graph create --node http://localhost:8020/ degate/degate-holesky",
-    "remove-local": "graph remove --node http://localhost:8020/ degate/degate-holesky",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 degate/degate-holesky"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate-mainnet",
+    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ degate/degate-mainnet",
+    "create-local": "graph create --node http://localhost:8020/ degate/degate-mainnet",
+    "remove-local": "graph remove --node http://localhost:8020/ degate/degate-mainnet",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 degate/degate-mainnet"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.59.0",
     "@graphprotocol/graph-ts": "^0.34.0"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

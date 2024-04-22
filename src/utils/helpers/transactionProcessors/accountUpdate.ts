@@ -4,7 +4,7 @@ import {
   Token,
   Proxy
 } from "../../../../generated/schema";
-import { BigInt, Address, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, Address, Bytes , log} from "@graphprotocol/graph-ts";
 import {
   extractData,
   extractBigInt,
@@ -111,16 +111,16 @@ export function processAccountUpdate(
   transaction.data = data;
   transaction.block = block.id;
 
-  let offset = 1;
+  let offset = 0;
 
   transaction.updateType = extractInt(data, offset, 1);
   offset += 1;
   transaction.owner = extractData(data, offset, 20);
   offset += 20;
-  transaction.accountID = extractInt(data, offset, 4);
+  let accountId = extractInt(data, offset, 4);
   offset += 4;
   transaction.feeTokenID = extractInt(data, offset, 2);
-  offset += 2;
+  offset += 4;
   transaction.fee = extractBigIntFromFloat(data, offset, 2, 5, 11, 10);
   offset += 2;
   transaction.publicKey = extractData(data, offset, 32);
@@ -128,6 +128,13 @@ export function processAccountUpdate(
   transaction.nonce = extractInt(data, offset, 4);
   offset += 4;
 
+  let accountIdExtra = extractInt(data, offset, 4);
+  if (accountIdExtra != 0) {
+    accountId = accountIdExtra;
+  }
+  transaction.accountID = accountId;
+  log.debug("accountUpdate updateType {}, owner {}, accountId {}, feeTokenId{}, fee {}, nonce {}, publicKey {}", [transaction.updateType.toString(), transaction.owner, 
+    transaction.accountID.toString(), transaction.feeTokenID.toString(), transaction.fee.toString(), transaction.nonce.toString(), transaction.publicKey]);
   let user = getOrCreateUser(
     intToString(transaction.accountID),
     transaction.id,

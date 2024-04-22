@@ -4,8 +4,7 @@ import {
   Pair,
   Block,
   Token,
-  User,
-  Pool,
+  User, 
   Proxy,
   SwapNFT,
   TradeNFT
@@ -642,17 +641,17 @@ export function processSpotTrade(
       proxy.swapCount = proxy.swapCount.plus(BIGINT_ONE);
       block.swapCount = block.swapCount.plus(BIGINT_ONE);
 
-      let coercedTransaction = changetype<Swap>(transaction);
-      coercedTransaction.pool =
-        transaction.accountIdA < transaction.accountIdB
-          ? accountAID
-          : accountBID;
-      coercedTransaction.account =
-        transaction.accountIdA < transaction.accountIdB
-          ? accountBID
-          : accountAID;
-      coercedTransaction.typename = TRANSACTION_AMM_SWAP_TYPENAME;
-      coercedTransaction.save();
+      // let coercedTransaction = changetype<Swap>(transaction);
+      // coercedTransaction.pool =
+      //   transaction.accountIdA < transaction.accountIdB
+      //     ? accountAID
+      //     : accountBID;
+      // coercedTransaction.account =
+      //   transaction.accountIdA < transaction.accountIdB
+      //     ? accountBID
+      //     : accountAID;
+      // coercedTransaction.typename = TRANSACTION_AMM_SWAP_TYPENAME;
+      // coercedTransaction.save();
 
       tokenADailyData.tradedVolumeSwap = tokenADailyData.tradedVolumeSwap.plus(
         transaction.fillSA

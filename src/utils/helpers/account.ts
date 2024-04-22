@@ -1,6 +1,5 @@
 import {
-  Proxy,
-  Pool,
+  Proxy, 
   User,
   AccountTokenBalance,
   ProtocolAccount,
@@ -50,34 +49,6 @@ export function getOrCreateUser(
   return user as User;
 }
 
-export function getOrCreatePool(
-  id: String,
-  transactionId: String,
-  addressString: String,
-  proxy: Proxy,
-  createIfNotFound: boolean = true
-): Pool {
-  let pool = Pool.load(id);
-
-  if (pool == null && createIfNotFound) {
-    pool = new Pool(id);
-    pool.internalID = BigInt.fromString(id);
-    pool.createdAt = compoundIdToSortableDecimal(transactionId);
-    pool.lastUpdatedAt = compoundIdToSortableDecimal(transactionId);
-    pool.createdAtTransaction = transactionId;
-    pool.lastUpdatedAtTransaction = transactionId;
-    pool.address = Address.fromString(addressString) as Bytes;
-
-    pool.save();
-
-    proxy.poolCount = proxy.poolCount + BIGINT_ONE;
-  } else if (pool != null) {
-    pool.lastUpdatedAt = compoundIdToSortableDecimal(transactionId);
-    pool.lastUpdatedAtTransaction = transactionId;
-  }
-
-  return pool as Pool;
-}
 
 export function getOrCreateAccountTokenBalance(
   accountId: String,
@@ -201,19 +172,11 @@ export function createIfNewAccount(
   addressString: String,
   proxy: Proxy
 ): void {
-  if (accountId > USER_ACCOUNT_THRESHOLD) {
     getOrCreateUser(
       intToString(accountId),
       transactionId,
       addressString,
       proxy
     );
-  } else {
-    getOrCreatePool(
-      intToString(accountId),
-      transactionId,
-      addressString,
-      proxy
-    );
-  }
+
 }

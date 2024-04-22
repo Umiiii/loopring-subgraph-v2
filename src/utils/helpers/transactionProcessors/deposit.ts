@@ -3,7 +3,6 @@ import {
   Block,
   Token,
   User,
-  Pool,
   Proxy
 } from "../../../../generated/schema";
 import { BigInt, Address, Bytes, log } from "@graphprotocol/graph-ts";
@@ -81,7 +80,10 @@ export function processDeposit(
   transaction.data = data;
   transaction.block = block.id;
 
-  let offset = 1; // First byte is tx type
+  let offset = 0; // First byte is tx type
+
+  transaction.type = extractInt(data, offset, 1);
+  offset += 1;
 
   transaction.to = "0x" + extractData(data, offset, 20);
   offset += 20;
@@ -91,6 +93,8 @@ export function processDeposit(
   offset += 4;
   transaction.amount = extractBigInt(data, offset, 31);
   offset += 31;
+
+  log.debug("rawData: {}", [data]);
 
   let accountId = intToString(transaction.toAccountID);
   log.debug("processDeposit: account address {}", [transaction.to]);

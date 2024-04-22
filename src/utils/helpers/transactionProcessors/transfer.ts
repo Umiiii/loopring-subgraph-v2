@@ -4,8 +4,7 @@ import {
   Add,
   Block,
   Token,
-  User,
-  Pool,
+  User, 
   Proxy,
   TransferNFT
 } from "../../../../generated/schema";
@@ -146,7 +145,7 @@ export function processTransfer(
   block.transactionCount = block.transactionCount + BIGINT_ONE;
 
   let transaction = new Transfer(id);
-  let offset = 1;
+  let offset = 0;
 
   // Check that this is a conditional update
   transaction.type = extractInt(data, offset, 1);
@@ -156,8 +155,8 @@ export function processTransfer(
   offset += 4;
   transaction.accountToID = extractInt(data, offset, 4);
   offset += 4;
-  transaction.tokenID = extractInt(data, offset, 2);
-  offset += 2;
+  transaction.tokenID = extractInt(data, offset, 4);
+  offset += 4;
   transaction.amount = extractBigIntFromFloat(data, offset, 3, 5, 19, 10);
   offset += 3;
   transaction.feeTokenID = extractInt(data, offset, 2);
@@ -336,7 +335,6 @@ export function processTransfer(
 
       let coercedTransaction = changetype<Add>(transaction);
       coercedTransaction.account = fromAccountId;
-      coercedTransaction.pool = toAccountId;
       coercedTransaction.typename = TRANSACTION_ADD_TYPENAME;
       coercedTransaction.save();
     } else if (transaction.accountFromID < USER_ACCOUNT_THRESHOLD) {
@@ -345,7 +343,6 @@ export function processTransfer(
 
       let coercedTransaction = changetype<Remove>(transaction);
       coercedTransaction.account = toAccountId;
-      coercedTransaction.pool = fromAccountId;
       coercedTransaction.typename = TRANSACTION_REMOVE_TYPENAME;
       coercedTransaction.save();
     }

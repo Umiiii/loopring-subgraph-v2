@@ -57,8 +57,8 @@ export function getTxData(
   index: i32,
   blockSize: i32
 ): String {
-  let size1 = 29;
-  let size2 = 39;
+  let size1 = 80;
+  let size2 = 3;
   let txData1 = extractData(data, offset + index * size1, size1);
   let txData2 = extractData(
     data,
