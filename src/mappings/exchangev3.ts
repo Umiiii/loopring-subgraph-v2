@@ -2,8 +2,6 @@ import { log, BigInt, ethereum } from "@graphprotocol/graph-ts";
 import {
   TokenRegistered,
   SubmitBlocksCall,
-  SubmitBlocks1Call,
-  SubmitBlocks2Call,
   SubmitBlocksCallBlocksStruct
 } from "../../generated/OwnedUpgradabilityProxy/OwnedUpgradabilityProxy";
 import { Block, Proxy } from "../../generated/schema";
@@ -29,21 +27,7 @@ export function handleTokenRegistered(event: TokenRegistered): void {
   proxy.save();
 }
 
-export function handleSubmitBlocksV1(call: SubmitBlocksCall): void {
-  handleSubmitBlocks(
-    changetype<ethereum.Call>(call),
-    changetype<Array<SubmitBlocksCallBlocksStruct>>(call.inputs.blocks)
-  );
-}
-
-export function handleSubmitBlocksV2(call: SubmitBlocks1Call): void {
-  handleSubmitBlocks(
-    changetype<ethereum.Call>(call),
-    changetype<Array<SubmitBlocksCallBlocksStruct>>(call.inputs.blocks)
-  );
-}
-
-export function handleSubmitBlocksV3(call: SubmitBlocks2Call): void {
+export function handleSubmitBlocksExport(call: SubmitBlocksCall): void {
   handleSubmitBlocks(
     changetype<ethereum.Call>(call),
     changetype<Array<SubmitBlocksCallBlocksStruct>>(call.inputs.blocks)
@@ -91,6 +75,10 @@ function handleSubmitBlocks(
     block.blockVersion = blockData.blockVersion;
     block.data = blockData.data.toHexString();
     block.proof = blockData.proof;
+    
+    block.auxiliaryData = blockData.auxiliaryData.toHexString();
+    
+
     block.storeBlockInfoOnchain = blockData.storeBlockInfoOnchain;
     block.offchainData = blockData.offchainData;
     log.debug("blockType {}, blockSize {}, blockVersion {}, data {}, storeBlockInfoOnchain {}", 

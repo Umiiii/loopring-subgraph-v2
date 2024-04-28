@@ -25,8 +25,6 @@ dataSources:
         - Withdrawal
         - Deposit
         - Transfer
-        - Add
-        - Remove
         - OrderbookTrade
         - Swap
         - SignatureVerification
@@ -43,7 +41,7 @@ dataSources:
           handler: handleTokenRegistered
       callHandlers:
         - function: submitBlocks((uint8,uint16,uint8,bytes,uint256[8],bool,bytes,bytes)[])
-          handler: handleSubmitBlocksV3
+          handler: handleSubmitBlocksExport
   # - BlockSubmitted(indexed uint256,bytes32,bytes32)
   # - DepositRequested(address,address,address,uint16,uint96)
   # - ExchangeCloned(address,address,bytes32)

@@ -1,8 +1,6 @@
 export {
   handleTokenRegistered,
-  handleSubmitBlocksV1,
-  handleSubmitBlocksV2,
-  handleSubmitBlocksV3
+  handleSubmitBlocksExport,
 } from "./mappings/exchangev3";
 
 export {

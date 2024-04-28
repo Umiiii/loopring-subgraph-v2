@@ -115,6 +115,24 @@
     "type": "receive"
   },
   {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "value",
+        "type": "bool"
+      }
+    ],
+    "name": "AllowOnchainTransferFrom",
+    "type": "event"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -145,6 +163,63 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "blockVerifier",
+        "type": "address"
+      }
+    ],
+    "name": "BlockVerifierRefreshed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "depositContract",
+        "type": "address"
+      }
+    ],
+    "name": "DepositContractUpdate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "freeDepositMax",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "freeDepositRemained",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "freeSlotPerBlock",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "depositFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "DepositParamsUpdate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "from",
         "type": "address"
       },
@@ -162,15 +237,15 @@
       },
       {
         "indexed": false,
-        "internalType": "uint16",
+        "internalType": "uint32",
         "name": "tokenId",
-        "type": "uint16"
+        "type": "uint32"
       },
       {
         "indexed": false,
-        "internalType": "uint96",
+        "internalType": "uint248",
         "name": "amount",
-        "type": "uint96"
+        "type": "uint248"
       }
     ],
     "name": "DepositRequested",
@@ -250,27 +325,15 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint8",
-        "name": "takerFeeBips",
-        "type": "uint8"
+        "internalType": "uint16",
+        "name": "protocolFeeBips",
+        "type": "uint16"
       },
       {
         "indexed": false,
-        "internalType": "uint8",
-        "name": "makerFeeBips",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "previousTakerFeeBips",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "previousMakerFeeBips",
-        "type": "uint8"
+        "internalType": "uint16",
+        "name": "previousProtocolFeeBips",
+        "type": "uint16"
       }
     ],
     "name": "ProtocolFeesUpdated",
@@ -325,6 +388,44 @@
       }
     ],
     "name": "TransactionApproved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address[]",
+        "name": "owners",
+        "type": "address[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32[]",
+        "name": "transactionHashes",
+        "type": "bytes32[]"
+      }
+    ],
+    "name": "TransactionsApproved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "WithdrawExchangeFees",
     "type": "event"
   },
   {
@@ -415,10 +516,66 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint248",
+        "name": "amount",
+        "type": "uint248"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "storageID",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newRecipient",
+        "type": "address"
+      }
+    ],
+    "name": "WithdrawalRecipientUpdate",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "allowOnchainTransferFrom",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "from",
         "type": "address"
       },
       {
@@ -482,9 +639,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint96",
+        "internalType": "uint248",
         "name": "amount",
-        "type": "uint96"
+        "type": "uint248"
       },
       {
         "internalType": "bytes",
@@ -514,7 +671,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "from",
         "type": "address"
       },
       {
@@ -534,23 +691,10 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getAgentRegistry",
-    "outputs": [
-      {
-        "internalType": "contract IAgentRegistry",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "from",
         "type": "address"
       },
       {
@@ -669,6 +813,16 @@
             "internalType": "uint256",
             "name": "MAX_AGE_DEPOSIT_UNTIL_WITHDRAWABLE_UPPERBOUND",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "MAX_FORCED_WITHDRAWAL_FEE",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "DEFAULT_PROTOCOL_FEE_BIPS",
+            "type": "uint256"
           }
         ],
         "internalType": "struct ExchangeData.Constants",
@@ -677,6 +831,25 @@
       }
     ],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "getDepositBalance",
+    "outputs": [
+      {
+        "internalType": "uint248",
+        "name": "",
+        "type": "uint248"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -720,12 +893,38 @@
   },
   {
     "inputs": [],
+    "name": "getFreeDepositRemained",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getMaxAgeDepositUntilWithdrawable",
     "outputs": [
       {
         "internalType": "uint32",
         "name": "",
         "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMerkleAssetRoot",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
@@ -761,7 +960,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "from",
         "type": "address"
       },
       {
@@ -773,9 +972,9 @@
     "name": "getPendingDepositAmount",
     "outputs": [
       {
-        "internalType": "uint96",
+        "internalType": "uint248",
         "name": "",
-        "type": "uint96"
+        "type": "uint248"
       }
     ],
     "stateMutability": "view",
@@ -810,24 +1009,24 @@
         "type": "uint32"
       },
       {
-        "internalType": "uint8",
-        "name": "takerFeeBips",
-        "type": "uint8"
+        "internalType": "uint16",
+        "name": "protocolFeeBips",
+        "type": "uint16"
       },
       {
-        "internalType": "uint8",
-        "name": "makerFeeBips",
-        "type": "uint8"
+        "internalType": "uint16",
+        "name": "previousProtocolFeeBips",
+        "type": "uint16"
       },
       {
-        "internalType": "uint8",
-        "name": "previousTakerFeeBips",
-        "type": "uint8"
+        "internalType": "uint32",
+        "name": "executeTimeOfNextProtocolFeeBips",
+        "type": "uint32"
       },
       {
-        "internalType": "uint8",
-        "name": "previousMakerFeeBips",
-        "type": "uint8"
+        "internalType": "uint16",
+        "name": "nextProtocolFeeBips",
+        "type": "uint16"
       }
     ],
     "stateMutability": "view",
@@ -836,9 +1035,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint32",
         "name": "tokenID",
-        "type": "uint16"
+        "type": "uint32"
       }
     ],
     "name": "getTokenAddress",
@@ -863,9 +1062,28 @@
     "name": "getTokenID",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint32",
         "name": "",
-        "type": "uint16"
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "getUnconfirmedBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -889,9 +1107,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint96",
+        "internalType": "uint248",
         "name": "amount",
-        "type": "uint96"
+        "type": "uint248"
       },
       {
         "internalType": "uint32",
@@ -925,6 +1143,11 @@
       {
         "internalType": "bytes32",
         "name": "_genesisMerkleRoot",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_genesisMerkleAssetRoot",
         "type": "bytes32"
       }
     ],
@@ -987,7 +1210,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "from",
         "type": "address"
       },
       {
@@ -1011,7 +1234,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "from",
         "type": "address"
       }
     ],
@@ -1045,19 +1268,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "loopringAddr",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1146,9 +1356,9 @@
     "name": "registerToken",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint32",
         "name": "",
-        "type": "uint16"
+        "type": "uint32"
       }
     ],
     "stateMutability": "nonpayable",
@@ -1164,12 +1374,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_agentRegistry",
-        "type": "address"
+        "internalType": "bool",
+        "name": "value",
+        "type": "bool"
       }
     ],
-    "name": "setAgentRegistry",
+    "name": "setAllowOnchainTransferFrom",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1183,6 +1393,34 @@
       }
     ],
     "name": "setDepositContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "freeDepositMax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "freeDepositRemained",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "freeSlotPerBlock",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "depositFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "setDepositParams",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1224,9 +1462,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint96",
+        "internalType": "uint248",
         "name": "amount",
-        "type": "uint96"
+        "type": "uint248"
       },
       {
         "internalType": "uint32",
@@ -1292,8 +1530,45 @@
         "type": "address"
       },
       {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "freeDepositMax",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "freeDepositRemained",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastDepositBlockNum",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "freeSlotPerBlock",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositFee",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ExchangeData.DepositState",
+        "name": "depositState",
+        "type": "tuple"
+      },
+      {
         "internalType": "bytes32",
         "name": "merkleRoot",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "merkleAssetRoot",
         "type": "bytes32"
       },
       {
@@ -1314,24 +1589,24 @@
             "type": "uint32"
           },
           {
-            "internalType": "uint8",
-            "name": "takerFeeBips",
-            "type": "uint8"
+            "internalType": "uint16",
+            "name": "protocolFeeBips",
+            "type": "uint16"
           },
           {
-            "internalType": "uint8",
-            "name": "makerFeeBips",
-            "type": "uint8"
+            "internalType": "uint16",
+            "name": "previousProtocolFeeBips",
+            "type": "uint16"
           },
           {
-            "internalType": "uint8",
-            "name": "previousTakerFeeBips",
-            "type": "uint8"
+            "internalType": "uint32",
+            "name": "executeTimeOfNextProtocolFeeBips",
+            "type": "uint32"
           },
           {
-            "internalType": "uint8",
-            "name": "previousMakerFeeBips",
-            "type": "uint8"
+            "internalType": "uint16",
+            "name": "nextProtocolFeeBips",
+            "type": "uint16"
           }
         ],
         "internalType": "struct ExchangeData.ProtocolFeeData",
@@ -1339,156 +1614,24 @@
         "type": "tuple"
       },
       {
-        "internalType": "uint256",
-        "name": "shutdownModeStartTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "withdrawalModeStartTime",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "shutdownModeStartTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawalModeStartTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ExchangeData.ModeTime",
+        "name": "modeTime",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint8",
-            "name": "blockType",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint16",
-            "name": "blockSize",
-            "type": "uint16"
-          },
-          {
-            "internalType": "uint8",
-            "name": "blockVersion",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes",
-            "name": "data",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint256[8]",
-            "name": "proof",
-            "type": "uint256[8]"
-          },
-          {
-            "internalType": "bool",
-            "name": "storeBlockInfoOnchain",
-            "type": "bool"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "txIndex",
-                "type": "uint256"
-              },
-              {
-                "internalType": "bytes",
-                "name": "data",
-                "type": "bytes"
-              }
-            ],
-            "internalType": "struct ExchangeData.AuxiliaryData[]",
-            "name": "auxiliaryData",
-            "type": "tuple[]"
-          },
-          {
-            "internalType": "bytes",
-            "name": "offchainData",
-            "type": "bytes"
-          }
-        ],
-        "internalType": "struct ExchangeData.Block[]",
-        "name": "blocks",
-        "type": "tuple[]"
-      }
-    ],
-    "name": "submitBlocks",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint8",
-            "name": "blockType",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint16",
-            "name": "blockSize",
-            "type": "uint16"
-          },
-          {
-            "internalType": "uint8",
-            "name": "blockVersion",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes",
-            "name": "data",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint256[8]",
-            "name": "proof",
-            "type": "uint256[8]"
-          },
-          {
-            "internalType": "bool",
-            "name": "storeBlockInfoOnchain",
-            "type": "bool"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "txIndex",
-                "type": "uint256"
-              },
-              {
-                "internalType": "bool",
-                "name": "approved",
-                "type": "bool"
-              },
-              {
-                "internalType": "bytes",
-                "name": "data",
-                "type": "bytes"
-              }
-            ],
-            "internalType": "struct ExchangeData.AuxiliaryData[]",
-            "name": "auxiliaryData",
-            "type": "tuple[]"
-          },
-          {
-            "internalType": "bytes",
-            "name": "offchainData",
-            "type": "bytes"
-          }
-        ],
-        "internalType": "struct ExchangeData.Block[]",
-        "name": "blocks",
-        "type": "tuple[]"
-      }
-    ],
-    "name": "submitBlocks",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -1631,7 +1774,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "from",
         "type": "address"
       },
       {
@@ -1675,11 +1818,6 @@
                 "internalType": "uint32",
                 "name": "nonce",
                 "type": "uint32"
-              },
-              {
-                "internalType": "uint256",
-                "name": "feeBipsAMM",
-                "type": "uint256"
               }
             ],
             "internalType": "struct ExchangeData.AccountLeaf",
@@ -1689,24 +1827,14 @@
           {
             "components": [
               {
-                "internalType": "uint16",
+                "internalType": "uint32",
                 "name": "tokenID",
-                "type": "uint16"
+                "type": "uint32"
               },
               {
-                "internalType": "uint96",
+                "internalType": "uint248",
                 "name": "balance",
-                "type": "uint96"
-              },
-              {
-                "internalType": "uint96",
-                "name": "weightAMM",
-                "type": "uint96"
-              },
-              {
-                "internalType": "uint256",
-                "name": "storageRoot",
-                "type": "uint256"
+                "type": "uint248"
               }
             ],
             "internalType": "struct ExchangeData.BalanceLeaf",
@@ -1719,9 +1847,9 @@
             "type": "uint256[48]"
           },
           {
-            "internalType": "uint256[24]",
+            "internalType": "uint256[48]",
             "name": "balanceMerkleProof",
-            "type": "uint256[24]"
+            "type": "uint256[48]"
           }
         ],
         "internalType": "struct ExchangeData.MerkleProof",
@@ -1732,19 +1860,6 @@
     "name": "withdrawFromMerkleTree",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "withdrawProtocolFees",
-    "outputs": [],
-    "stateMutability": "payable",
     "type": "function"
   }
 ]

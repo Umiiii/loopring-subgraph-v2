@@ -26,8 +26,7 @@ import {
   TRANSACTION_WITHDRAWAL_TYPENAME,
   BIGINT_ONE,
   BIGINT_ZERO,
-  TRANSACTION_WITHDRAWAL_NFT_TYPENAME,
-  isNFT
+
 } from "../../constants";
 
 // interface Withdrawal {

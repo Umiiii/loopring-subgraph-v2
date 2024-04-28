@@ -12,7 +12,7 @@ import {
   ZERO_ADDRESS,
   BIGINT_ZERO,
   BIGINT_ONE,
-  USER_ACCOUNT_THRESHOLD,
+  
   SECONDS_PER_DAY,
   LAUNCH_DAY,
   SECONDS_PER_WEEK,
@@ -28,7 +28,7 @@ export function getOrCreateUser(
   createIfNotFound: boolean = true
 ): User {
   let user = User.load(id);
-
+  
   if (user == null && createIfNotFound) {
     user = new User(id);
     user.internalID = BigInt.fromString(id);

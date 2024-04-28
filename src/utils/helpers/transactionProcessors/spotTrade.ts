@@ -35,13 +35,8 @@ import {
 } from "../index";
 import {
   BIGINT_ZERO,
-  TRANSACTION_AMM_SWAP_TYPENAME,
-  TRANSACTION_SWAP_NFT_TYPENAME,
-  TRANSACTION_TRADE_NFT_TYPENAME,
   TRANSACTION_ORDERBOOK_TRADE_TYPENAME,
-  USER_ACCOUNT_THRESHOLD,
   BIGINT_ONE,
-  isNFT
 } from "../../constants";
 
 // interface SettlementValues {
@@ -634,65 +629,7 @@ export function processSpotTrade(
     // This could be a lot cleaner if we could use interfaces in AssemblyScript
     // After that we also need to update the breakdowns for every statistic we track
     // on the various core, daily and weekly entities.
-    if (
-      transaction.accountIdA < USER_ACCOUNT_THRESHOLD ||
-      transaction.accountIdB < USER_ACCOUNT_THRESHOLD
-    ) {
-      proxy.swapCount = proxy.swapCount.plus(BIGINT_ONE);
-      block.swapCount = block.swapCount.plus(BIGINT_ONE);
-
-      // let coercedTransaction = changetype<Swap>(transaction);
-      // coercedTransaction.pool =
-      //   transaction.accountIdA < transaction.accountIdB
-      //     ? accountAID
-      //     : accountBID;
-      // coercedTransaction.account =
-      //   transaction.accountIdA < transaction.accountIdB
-      //     ? accountBID
-      //     : accountAID;
-      // coercedTransaction.typename = TRANSACTION_AMM_SWAP_TYPENAME;
-      // coercedTransaction.save();
-
-      tokenADailyData.tradedVolumeSwap = tokenADailyData.tradedVolumeSwap.plus(
-        transaction.fillSA
-      );
-      tokenAWeeklyData.tradedVolumeSwap = tokenAWeeklyData.tradedVolumeSwap.plus(
-        transaction.fillSA
-      );
-      tokenBDailyData.tradedVolumeSwap = tokenBDailyData.tradedVolumeSwap.plus(
-        transaction.fillSB
-      );
-      tokenBWeeklyData.tradedVolumeSwap = tokenBWeeklyData.tradedVolumeSwap.plus(
-        transaction.fillSB
-      );
-
-      tokenA.tradedVolumeSwap = tokenA.tradedVolumeSwap.plus(
-        transaction.fillSA
-      );
-      tokenB.tradedVolumeSwap = tokenB.tradedVolumeSwap.plus(
-        transaction.fillSB
-      );
-
-      pairDailyData.tradedVolumeToken0Swap = pairDailyData.tradedVolumeToken0Swap.plus(
-        token0Amount
-      );
-      pairDailyData.tradedVolumeToken1Swap = pairDailyData.tradedVolumeToken1Swap.plus(
-        token1Amount
-      );
-      pairWeeklyData.tradedVolumeToken0Swap = pairWeeklyData.tradedVolumeToken0Swap.plus(
-        token0Amount
-      );
-      pairWeeklyData.tradedVolumeToken1Swap = pairWeeklyData.tradedVolumeToken1Swap.plus(
-        token1Amount
-      );
-
-      pair.tradedVolumeToken0Swap = pair.tradedVolumeToken0Swap.plus(
-        token0Amount
-      );
-      pair.tradedVolumeToken1Swap = pair.tradedVolumeToken1Swap.plus(
-        token1Amount
-      );
-    } else {
+   
       proxy.orderbookTradeCount = proxy.orderbookTradeCount.plus(BIGINT_ONE);
       block.orderbookTradeCount = block.orderbookTradeCount.plus(BIGINT_ONE);
 
@@ -740,7 +677,7 @@ export function processSpotTrade(
       pair.tradedVolumeToken1Orderbook = pair.tradedVolumeToken1Orderbook.plus(
         token1Amount
       );
-    }
+    
 
     getAndUpdateAccountTokenBalanceDailyData(
       accountTokenBalanceAA,

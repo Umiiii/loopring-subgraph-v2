@@ -8,7 +8,7 @@ import {
   Proxy,
   TransferNFT
 } from "../../../../generated/schema";
-import { BigInt, Address, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, Address, Bytes , log} from "@graphprotocol/graph-ts";
 import {
   extractData,
   extractBigInt,
@@ -26,13 +26,9 @@ import {
 } from "../index";
 import {
   TRANSACTION_TRANSFER_TYPENAME,
-  TRANSACTION_ADD_TYPENAME,
-  TRANSACTION_REMOVE_TYPENAME,
-  TRANSACTION_TRANSFER_NFT_TYPENAME,
-  USER_ACCOUNT_THRESHOLD,
   BIGINT_ONE,
   BIGINT_ZERO,
-  isNFT
+
 } from "../../constants";
 
 // interface Transfer {
@@ -146,7 +142,7 @@ export function processTransfer(
 
   let transaction = new Transfer(id);
   let offset = 0;
-
+  
   // Check that this is a conditional update
   transaction.type = extractInt(data, offset, 1);
   offset += 1;
@@ -157,10 +153,10 @@ export function processTransfer(
   offset += 4;
   transaction.tokenID = extractInt(data, offset, 4);
   offset += 4;
-  transaction.amount = extractBigIntFromFloat(data, offset, 3, 5, 19, 10);
-  offset += 3;
-  transaction.feeTokenID = extractInt(data, offset, 2);
-  offset += 2;
+  transaction.amount = extractBigIntFromFloat(data, offset, 4, 7, 25, 10);
+  offset += 4;
+  transaction.feeTokenID = extractInt(data, offset, 4);
+  offset += 4;
   transaction.fee = extractBigIntFromFloat(data, offset, 2, 5, 11, 10);
   offset += 2;
   transaction.storageID = extractInt(data, offset, 4);
@@ -172,8 +168,22 @@ export function processTransfer(
   transaction.toTokenID = extractInt(data, offset, 2);
   offset += 2;
 
-  // toTokenID is needed to enable NFT trading, since in case of NFT trading,
-  // it will depict the slot on where the NFT is gonna be placed
+  log.debug("transfer type {} accountFromID {} accountToID {} tokenID {} amount {} feeTokenID {} fee {} storageID {} to {} from {} toTokenID {}",
+    [
+      transaction.type.toString(),
+      transaction.accountFromID.toString(),
+      transaction.accountToID.toString(),
+      transaction.tokenID.toString(),
+      transaction.amount.toString(),
+      transaction.feeTokenID.toString(),
+      transaction.fee.toString(),
+      transaction.storageID.toString(),
+      transaction.to,
+      transaction.from,
+      transaction.toTokenID.toString()
+    ]
+  );
+  
   transaction.toTokenID =
     transaction.toTokenID != 0 ? transaction.toTokenID : transaction.tokenID;
 
@@ -315,36 +325,12 @@ export function processTransfer(
       toAccountTokenBalance,
       block.timestamp
     );
+    proxy.transferCount = proxy.transferCount.plus(BIGINT_ONE);
+    block.transferCount = block.transferCount.plus(BIGINT_ONE);
 
-    // Coerce the type of the Transfer at the end, so we can reuse most of the code with no changes.
-    // This could be a lot cleaner if we could use interfaces in AssemblyScript
-    if (
-      transaction.accountToID > USER_ACCOUNT_THRESHOLD &&
-      transaction.accountFromID > USER_ACCOUNT_THRESHOLD
-    ) {
-      proxy.transferCount = proxy.transferCount.plus(BIGINT_ONE);
-      block.transferCount = block.transferCount.plus(BIGINT_ONE);
-
-      transaction.fromAccount = fromAccountId;
-      transaction.toAccount = toAccountId;
-      transaction.typename = TRANSACTION_TRANSFER_TYPENAME;
-      transaction.save();
-    } else if (transaction.accountToID < USER_ACCOUNT_THRESHOLD) {
-      proxy.addCount = proxy.addCount.plus(BIGINT_ONE);
-      block.addCount = block.addCount.plus(BIGINT_ONE);
-
-      let coercedTransaction = changetype<Add>(transaction);
-      coercedTransaction.account = fromAccountId;
-      coercedTransaction.typename = TRANSACTION_ADD_TYPENAME;
-      coercedTransaction.save();
-    } else if (transaction.accountFromID < USER_ACCOUNT_THRESHOLD) {
-      proxy.removeCount = proxy.removeCount.plus(BIGINT_ONE);
-      block.removeCount = block.removeCount.plus(BIGINT_ONE);
-
-      let coercedTransaction = changetype<Remove>(transaction);
-      coercedTransaction.account = toAccountId;
-      coercedTransaction.typename = TRANSACTION_REMOVE_TYPENAME;
-      coercedTransaction.save();
-    }
+    transaction.fromAccount = fromAccountId;
+    transaction.toAccount = toAccountId;
+    transaction.typename = TRANSACTION_TRANSFER_TYPENAME;
+    transaction.save();
   
 }
