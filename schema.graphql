@@ -127,7 +127,6 @@ type Pair @entity {
   "Total traded volume of token1 within this pair exclusively on Orderbook trades. Denominated in it's own currency"
   tradedVolumeToken1Orderbook: BigInt!
 
-  swaps: [Swap!]! @derivedFrom(field: "pair")
   trades: [OrderbookTrade!]! @derivedFrom(field: "pair")
 
   dailyEntities: [PairDailyData!]! @derivedFrom(field: "pair")
@@ -258,8 +257,6 @@ interface Account {
   "L2 transactions that involved this account"
   transactions: [Transaction!]! @derivedFrom(field: "accounts")
 
-  "List of all the AccountNFTSlot entities that this account has. Those slots can be empty but will only exist if they held an NFT at some point."
-  slots: [AccountNFTSlot!]! @derivedFrom(field: "account")
 }
 
 type User implements Account @entity {
@@ -291,8 +288,6 @@ type User implements Account @entity {
   "L2 transactions that involved this account"
   transactions: [Transaction!]! @derivedFrom(field: "accounts")
 
-  "List of all the AccountNFTSlot entities that this account has. Those slots can be empty but will only exist if they held an NFT at some point."
-  slots: [AccountNFTSlot!]! @derivedFrom(field: "account")
 }
 
 
@@ -322,8 +317,6 @@ type ProtocolAccount implements Account @entity {
   "L2 transactions that involved this account"
   transactions: [Transaction!]! @derivedFrom(field: "accounts")
 
-  "List of all the AccountNFTSlot entities that this account has. Those slots can be empty but will only exist if they held an NFT at some point."
-  slots: [AccountNFTSlot!]! @derivedFrom(field: "account")
 }
 
 type AccountTokenBalance @entity {
@@ -347,61 +340,8 @@ type AccountTokenBalance @entity {
     @derivedFrom(field: "accountTokenBalance")
 }
 
-type NonFungibleToken @entity {
-  "ID is the Poseidon hash reported by L2"
-  id: ID!
 
-  "L2 transaction internalID where the NFT was minted. Useful for sorting and filtering purposes"
-  mintedAt: BigDecimal!
 
-  "L2 transaction where the NFT was minted"
-  mintedAtTransaction: MintNFT!
-
-  minter: Account!
-
-  nftType: Int!
-
-  token: String!
-
-  creatorFeeBips: Int!
-
-  nftID: String!
-
-  "List of all the AccountNFTSlot where this NFT is currently active."
-  slots: [AccountNFTSlot!]! @derivedFrom(field: "nft")
-
-  "List of all the transactions that this particular NFT was a part of"
-  transactions: [TransactionNFT!]! @derivedFrom(field:"nfts")
-}
-
-type AccountNFTSlot @entity {
-  "ID is compounded from the account ID and the token ID used as an NFT slot."
-  id: ID!
-
-  "Owner of this slot"
-  account: Account!
-
-  "NonFungibleToken saved in this slot. Null if empty"
-  nft: NonFungibleToken
-
-  "Amount of copies of this NonFungibleToken saved in this slot."
-  balance: BigInt!
-
-  "L2 transaction internalID where the slot was first created. Useful for sorting and filtering purposes"
-  createdAt: BigDecimal!
-
-  "L2 transaction internalID that last updated the slot entity. Useful for sorting and filtering purposes"
-  lastUpdatedAt: BigDecimal!
-
-  "L2 transaction where the slot was first created"
-  createdAtTransaction: Transaction!
-
-  "L2 transaction that last updated the slot entity"
-  lastUpdatedAtTransaction: Transaction!
-
-  "List of all the transactions that this particular NFT was a part of"
-  transactions: [TransactionNFT!]! @derivedFrom(field: "slots")
-}
 
 enum TransactionType {
   Deposit
@@ -519,59 +459,6 @@ type Withdrawal implements Transaction @entity {
   accounts: [Account!]
 }
 
-type WithdrawalNFT implements Transaction & TransactionNFT @entity {
-  id: ID!
-
-  "Explicit copy of __typename to make it usable when filtering"
-  typename: TransactionType!
-
-  "ID represented as a BigDecimal for sorting purposes"
-  internalID: BigDecimal!
-
-  data: String!
-
-  block: Block!
-
-  "Account entity that withdrew the tokens"
-  fromAccount: Account!
-
-  "Slot entity with information about the withdrawn NFT"
-  slot: AccountNFTSlot!
-
-  "Token entity with information about the token used to pay the operator fees"
-  feeToken: Token
-
-  "Whether the withdrawal transaction is valid. Only type 3 withdrawals are invalid."
-  valid: Boolean!
-
-  # Raw data parsed from the L2 data
-  "[RAW L2 DATA] Withdrawal type"
-  type: Int!
-  "[RAW L2 DATA] Address string of the account that withdrew"
-  from: String!
-  "[RAW L2 DATA] Account ID for the account that withdrew"
-  fromAccountID: Int!
-  "[RAW L2 DATA] Token ID of the withdrawn token"
-  tokenID: Int!
-  "[RAW L2 DATA] Amount withdrawn"
-  amount: BigInt!
-  "[RAW L2 DATA] Token ID of token used to pay the operator fees"
-  feeTokenID: Int!
-  "[RAW L2 DATA] Fee amount paid"
-  fee: BigInt!
-  "[RAW L2 DATA] On-chain data hash"
-  onchainDataHash: String!
-  "[RAW L2 DATA] StorageID"
-  storageID: Int!
-
-  tokenBalances: [AccountTokenBalance!]
-
-  accounts: [Account!]
-
-  nfts: [NonFungibleToken!]!
-
-  slots: [AccountNFTSlot!]!
-}
 
 type Transfer implements Transaction @entity {
   id: ID!
@@ -627,66 +514,6 @@ type Transfer implements Transaction @entity {
   accounts: [Account!]
 }
 
-type TransferNFT implements Transaction & TransactionNFT @entity {
-  id: ID!
-
-  "Explicit copy of __typename to make it usable when filtering"
-  typename: TransactionType!
-
-  "ID represented as a BigDecimal for sorting purposes"
-  internalID: BigDecimal!
-
-  data: String!
-
-  block: Block!
-
-  "Account entity that sent the tokens"
-  fromAccount: Account!
-
-  "Account entity that received the tokens"
-  toAccount: Account!
-
-  "Slot entity from where the NFT is moved"
-  fromSlot: AccountNFTSlot!
-
-  "Slot entity to where the NFT is moved"
-  toSlot: AccountNFTSlot!
-
-  "Token entity with information about the token used to pay the operator fees"
-  feeToken: Token!
-
-  # Raw data parsed from the L2 data
-  "[RAW L2 DATA] Transfer type"
-  type: Int!
-  "[RAW L2 DATA] Account ID for the account that sent the tokens"
-  accountFromID: Int!
-  "[RAW L2 DATA] Account ID for the account that received the tokens"
-  accountToID: Int!
-  "[RAW L2 DATA] Token ID of the token transfered"
-  tokenID: Int!
-  "[RAW L2 DATA] Amount transfered"
-  amount: BigInt!
-  "[RAW L2 DATA] Token ID of token used to pay the operator fees"
-  feeTokenID: Int!
-  "[RAW L2 DATA] Fee amount paid"
-  fee: BigInt!
-  "[RAW L2 DATA] StorageID"
-  storageID: Int!
-  "[RAW L2 DATA] Address string of the account that sent the tokens"
-  from: String!
-  "[RAW L2 DATA] Address string of the account that received the tokens"
-  to: String!
-  "[RAW L2 DATA] Token ID of the token transfered. Mainly used for NFT transfers"
-  toTokenID: Int!
-
-  tokenBalances: [AccountTokenBalance!]
-
-  accounts: [Account!]
-
-  nfts: [NonFungibleToken!]!
-
-  slots: [AccountNFTSlot!]!
-}
 
 type OrderbookTrade implements Transaction @entity {
   id: ID!
@@ -938,87 +765,6 @@ type SignatureVerification implements Transaction @entity {
   accounts: [Account!]
 }
 
-type MintNFT implements Transaction & TransactionNFT @entity {
-  id: ID!
-
-  "Explicit copy of __typename to make it usable when filtering"
-  typename: TransactionType!
-
-  "ID represented as a BigDecimal for sorting purposes"
-  internalID: BigDecimal!
-
-  data: String!
-
-  block: Block!
-
-  receiverSlot: AccountNFTSlot!
-
-  minter: Account!
-
-  receiver: Account!
-
-  nft: NonFungibleToken!
-
-  "Token entity with information about the token used to pay the operator fees"
-  feeToken: Token!
-
-  # Raw L2 data extracted from the data string
-  type: Int!
-  minterAccountID: Int!
-  toTokenID: Int!
-  feeTokenID: Int!
-  fee: BigInt!
-  amount: BigInt!
-  storageID: Int
-  nftType: Int!
-  tokenAccountID: Int
-  nftID: String!
-  creatorFeeBips: Int!
-  toAccountID: Int
-  to: String
-  "Data from the NFTData transactions that follow the mint"
-  extraData: String
-  tokenAddress: String!
-
-  tokenBalances: [AccountTokenBalance!]
-
-  accounts: [Account!]
-
-  nfts: [NonFungibleToken!]!
-
-  slots: [AccountNFTSlot!]!
-}
-
-type DataNFT implements Transaction & TransactionNFT @entity {
-  id: ID!
-
-  "Explicit copy of __typename to make it usable when filtering"
-  typename: TransactionType!
-
-  "ID represented as a BigDecimal for sorting purposes"
-  internalID: BigDecimal!
-
-  data: String!
-
-  block: Block!
-
-  type: Int!
-  accountID: Int!
-  tokenID: Int!
-  nftID: String!
-  creatorFeeBips: Int!
-  nftType: Int!
-  minter: String
-  tokenAddress: String
-
-  tokenBalances: [AccountTokenBalance!]
-
-  accounts: [Account!]
-
-  nfts: [NonFungibleToken!]!
-
-  slots: [AccountNFTSlot!]!
-}
 
 # Daily data entities
 
