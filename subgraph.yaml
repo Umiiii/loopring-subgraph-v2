@@ -29,6 +29,7 @@ dataSources:
         - Swap
         - SignatureVerification
         - AccountUpdate
+        - BatchSpotTrade
       abis:
         - name: OwnedUpgradabilityProxy
           file: ./abis/OwnedUpgradabilityProxy.json

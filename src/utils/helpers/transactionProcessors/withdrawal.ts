@@ -1,6 +1,5 @@
 import {
   Withdrawal,
-  WithdrawalNFT,
   Block,
   Token,
   User,

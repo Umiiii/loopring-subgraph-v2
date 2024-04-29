@@ -621,7 +621,7 @@ type OrderbookTrade implements Transaction @entity {
   accounts: [Account!]
 }
 
-type SpotTrade implements Transaction @entity {
+type BatchSpotTrade implements Transaction @entity {
   id: ID!
 
   "Explicit copy of __typename to make it usable when filtering"
@@ -653,28 +653,43 @@ type SpotTrade implements Transaction @entity {
   bindToken: Token!
 
 
+  tokenAID: Int!
+  tokenBID: Int!
+  bindTokenID: Int!
+
   "[RAW L2 DATA] Account ID of account A"
   accountIDA: Int!
   "[RAW L2 DATA] Account ID of account B"
   accountIDB: Int!
-  accountBFirtTokenID: Int!
+  accountBFirstTokenID: Int!
   accountBSecondTokenID: Int!
+  accountBFirstToken: Token!
+  accountBSecondToken: Token!
+  
   "[RAW L2 DATA] Account ID of account C"
   accountIDC: Int!
   accountCFirstTokenID: Int!
   accountCSecondTokenID: Int!
+  accountCFirstToken: Token!
+  accountCSecondToken: Token!
   "[RAW L2 DATA] Account ID of account D"
   accountIDD: Int!
   accountDFirstTokenID: Int!
   accountDSecondTokenID: Int!
+  accountDFirstToken: Token!
+  accountDSecondToken: Token!
   "[RAW L2 DATA] Account ID of account E"
   accountIDE: Int!
   accountEFirstTokenID: Int!
   accountESecondTokenID: Int!
+  accountEFirstToken: Token!
+  accountESecondToken: Token!
   "[RAW L2 DATA] Account ID of account F"
   accountIDF: Int!
   accountFFirstTokenID: Int!
   accountFSecondTokenID: Int!
+  accountFFirstToken: Token!
+  accountFSecondToken: Token!
 
   accountAFirstTokenAmountExchange: BigInt!
   accountASecondTokenAmountExchange: BigInt!

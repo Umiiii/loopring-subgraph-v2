@@ -9,3 +9,5 @@ export { processWithdrawal } from "./withdrawal";
 export { processAccountUpdate } from "./accountUpdate";
 
 export { processSignatureVerification } from "./signatureVerification";
+
+export { processBatchSpotTrade } from "./batchSpotTrade";

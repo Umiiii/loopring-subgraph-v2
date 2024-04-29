@@ -1,13 +1,10 @@
 import {
-  Swap,
   OrderbookTrade,
   Pair,
   Block,
   Token,
   User, 
   Proxy,
-  SwapNFT,
-  TradeNFT
 } from "../../../../generated/schema";
 import { BigInt, Address, Bytes } from "@graphprotocol/graph-ts";
 import {

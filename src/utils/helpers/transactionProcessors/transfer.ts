@@ -1,12 +1,9 @@
 import {
   Transfer,
-  Remove,
-  Add,
   Block,
   Token,
   User, 
-  Proxy,
-  TransferNFT
+  Proxy
 } from "../../../../generated/schema";
 import { BigInt, Address, Bytes , log} from "@graphprotocol/graph-ts";
 import {

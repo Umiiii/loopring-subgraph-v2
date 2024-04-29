@@ -23,6 +23,7 @@ import { getProxy } from "./upgradabilityProxy";
 import {
   processDeposit,
   processSpotTrade,
+  processBatchSpotTrade,
   processTransfer,
   processWithdrawal,
   processAccountUpdate,
@@ -134,9 +135,9 @@ export function processBlockData(block: Block, proxy: Proxy): Block {
     } else if (txType == TRANSACTION_TRANSFER) {
       processTransfer(txId, txData.slice(1), block, proxy);
     }
-    //  else if (txType == TRANSACTION_SPOT_TRADE) {
-    //   processSpotTrade(txId, txData, block, proxy);
-    
+     else if (txType == TRANSACTION_BATCH_SPOT_TRADE) {
+      processBatchSpotTrade(txId, txData, block, proxy);
+     }
     else if (txType == TRANSACTION_ACCOUNT_UPDATE) {
       processAccountUpdate(txId, txData, block, proxy);
     } else if (txType == TRANSACTION_ORDER_CANCEL) {
