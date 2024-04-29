@@ -29,6 +29,7 @@ export const TRANSACTION_AMM_UPDATE_TYPENAME = "AmmUpdate";
 export const TRANSACTION_SIGNATURE_VERIFICATION_TYPENAME =
   "SignatureVerification";
 export const TRANSACTION_ORDERBOOK_TRADE_TYPENAME = "OrderbookTrade"; // This is a parsed SpotTrade transaction. Doesn't exist in the raw data
+export const TRANSACTION_ORDERBOOK_BATCH_SPOT_TRADE_TYPENAME = "BatchSpotTrade"; 
 export const LAUNCH_DAY = 19672; // 1699746935 / 86400. 1603929600 = Thursday, October 29, 2020 0:00:00
 export const LAUNCH_WEEK = 2810;
 export const SECONDS_PER_DAY = 86400;

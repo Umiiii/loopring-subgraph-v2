@@ -3,6 +3,7 @@ import {
     Pair,
     Block,
     Proxy,
+    Token
   } from "../../../../generated/schema";
   import { BigInt, Address, Bytes , log} from "@graphprotocol/graph-ts";
   import {
@@ -31,11 +32,11 @@ import {
   } from "../index";
   import {
     BIGINT_ZERO,
-    TRANSACTION_ORDERBOOK_TRADE_TYPENAME,
+    TRANSACTION_ORDERBOOK_BATCH_SPOT_TRADE_TYPENAME,
     BIGINT_ONE,
   } from "../../constants";
 
-export function selectToken(tokenAID: i32, tokenBID: i32, bindTokenID: i32, tokenType: i32): [i32, i32] {
+export function selectToken(tokenAID: i32, tokenBID: i32, bindTokenID: i32, tokenType: i32): Array<i32> {
   if (tokenType == 0) {
     return [tokenAID, tokenBID];
   }
@@ -82,7 +83,7 @@ export function processBatchSpotTrade(
 
     let tokenA = getToken((intToString(firstToken))) as Token;
     let tokenB = getToken((intToString(secondToken))) as Token;
-    let bindTokenObj = getToken((intToString(bindToken))) as Token;
+    let bindTokenObj = getToken((intToString(bindToken as i32))) as Token;
 
     transaction.tokenA = tokenA.id;
     transaction.tokenB = tokenB.id;
@@ -214,7 +215,7 @@ export function processBatchSpotTrade(
     transaction.accountAFirstTokenAmountExchange = extractSignedBigIntFromFloat(user0FirstTokenAmountExchange, 5, 24, 10);
     transaction.accountASecondTokenAmountExchange = extractSignedBigIntFromFloat(user0SecondTokenAmountExchange, 5, 24, 10);
     transaction.accountAThirdTokenAmountExchange = extractSignedBigIntFromFloat(user0ThirdTokenAmountExchange, 5, 24, 10);
-    
+    transaction.typename = TRANSACTION_ORDERBOOK_BATCH_SPOT_TRADE_TYPENAME;
     transaction.save();
 
 }
