@@ -37,7 +37,7 @@ export function extractDataInBits(data: String, offset: i32, bitSize: i32, bitOf
     }
     let thirdPart = "";
     if (bitSizeTmp > 0) {
-      let lastByte = parseInt(extractData(data,offset, 1), 16).toString(2).padStart(8, "0");
+      let lastByte = I32.parseInt(extractData(data,offset, 1), 16).toString(2).padStart(8, "0");
       thirdPart = lastByte.slice(0, bitSizeTmp);
     }
     let finalStr = firstPart + secondPart + thirdPart;

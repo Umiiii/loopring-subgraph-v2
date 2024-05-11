@@ -1,5 +1,5 @@
 import { Token, Exchange, Block, Proxy } from "../../../generated/schema";
-import { Address, BigInt, Int8, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Int8, log ,ByteArray, ethereum, Bytes} from "@graphprotocol/graph-ts";
 import { ERC20 } from "../../../generated/OwnedUpgradabilityProxy/ERC20";
 import { DEFAULT_DECIMALS } from "../../utils/decimals";
 import {
@@ -92,6 +92,37 @@ export function processBlockData(block: Block, proxy: Proxy): Block {
   // }
   for (let i = 0; i < block.blockSize; i++) {
     const txData = getTxData(data, offset, i, block.blockSize);
+
+    // handle auxData
+    if (block.depositSize + block.accountUpdateSize + block.withdrawSize > 0) {
+      const depositSize = 192;
+      const accountUpdateSize = 320;
+      const withdrawSize = 384;
+      var offsetAux = 32;
+      block.auxiliaryData = block.auxiliaryData.slice(2); // Remove the 0x beginning of the hex string
+      let auxDataSize = extractData(block.auxiliaryData, offsetAux, 32);
+      offsetAux += 32;
+      log.debug("block auxDataSize: {}", [auxDataSize.toString()]);
+      offsetAux += 32 * (block.depositSize + block.accountUpdateSize + block.withdrawSize);
+      offsetAux += depositSize * block.depositSize + accountUpdateSize * block.accountUpdateSize;
+      for (let j = 0; j < block.withdrawSize; j++) {
+        let offsetWithdraw = offsetAux + withdrawSize * j;
+        let auxWithdrawData = extractData(block.auxiliaryData, offsetWithdraw, withdrawSize);
+        log.debug("block auxWithdrawData: {}", [auxWithdrawData]);
+        // const functionInputAsTuple = ByteArray.fromHexString(auxWithdrawData);
+        // const decoded = ethereum.decode(
+        //   "('bool','uint256','bytes','uint248','address','uint96','uint32', 'uint248')",
+        //   Bytes.fromByteArray(functionInputAsTuple)
+        // ).toTuple();
+        // const t = decoded[4].toAddress();
+
+        // log.debug("block auxWithdrawData: {}", [t.toString()]);
+        //let txDataWithdraw = getTxData(block.auxiliaryData, offsetWithdraw, j, block.withdrawSize);
+        //let txIdWithdraw = compoundId(block.id, intToString(i));
+        //processWithdrawal(txIdWithdraw, txDataWithdraw, block, proxy);
+      }
+    }
+
 
     let txId = compoundId(block.id, intToString(i));
 

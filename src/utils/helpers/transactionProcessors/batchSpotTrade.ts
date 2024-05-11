@@ -124,23 +124,6 @@ export function processBatchSpotTrade(
     transaction.accountFFirstTokenID = user5TokenTypeSelection[0];
     transaction.accountFSecondTokenID = user5TokenTypeSelection[1];
 
-    
-    //for (let i = 0; i < 5; i++) {
-    // let userAccountId = extractDataInBits(data,offset, 32, bitOffset);
-    // bitOffset += 32;
-    // let userFirstTokenAmountExchange = extractDataInBits(data,offset, 30, bitOffset);
-    // bitOffset += 30;
-    // let userSecondTokenAmountExchange = extractDataInBits(data,offset, 30, bitOffset);
-    // bitOffset += 30;
-    // let realNumber1 = extractSignedBigIntFromFloat(userFirstTokenAmountExchange, 5, 24, 10);
-    // let realNumber2 = extractSignedBigIntFromFloat(userSecondTokenAmountExchange, 5, 24, 10);
-    // log.debug("BatchSpotTrade, userAccountId {} userFirstTokenAmountExchange {} userSecondTokenAmountExchange {}, real1 {}, real2 {} typeof real1 {} typeof real2 {}", 
-    // [userAccountId.toString(), userFirstTokenAmountExchange.toString(), userSecondTokenAmountExchange.toString(),
-    //     realNumber1.toString(), realNumber2.toString(), typeof realNumber1, typeof realNumber2]);
-    //   console.log("BatchSpotTrade, userAccountId", userAccountId);
-    //   console.log("BatchSpotTrade, userFirstTokenAmountExchange", userFirstTokenAmountExchange, realNumber1.toString());
-    //   console.log("BatchSpotTrade, userSecondTokenAmountExchange", userSecondTokenAmountExchange, realNumber2.toString());
-    //}
     let userBAccountId = extractDataInBits(data,offset, 32, bitOffset);
     bitOffset += 32;
     let userBFirstTokenAmountExchange = extractDataInBits(data,offset, 30, bitOffset);
@@ -216,6 +199,96 @@ export function processBatchSpotTrade(
     transaction.accountASecondTokenAmountExchange = extractSignedBigIntFromFloat(user0SecondTokenAmountExchange, 5, 24, 10);
     transaction.accountAThirdTokenAmountExchange = extractSignedBigIntFromFloat(user0ThirdTokenAmountExchange, 5, 24, 10);
     transaction.typename = TRANSACTION_ORDERBOOK_BATCH_SPOT_TRADE_TYPENAME;
+
+    transaction.accountA = intToString(user0AccountID);
+    transaction.accountB = intToString(userBAccountId);
+    transaction.accountC = intToString(userCAccountId);
+    transaction.accountD = intToString(userDAccountId);
+    transaction.accountE = intToString(userEAccountId);
+    transaction.accountF = intToString(userFAccountId);
+    let accounts = new Array<String>();
+    accounts.push(intToString(user0AccountID));
+    accounts.push(intToString(userBAccountId));
+    accounts.push(intToString(userCAccountId));
+    accounts.push(intToString(userDAccountId));
+    accounts.push(intToString(userEAccountId));
+    accounts.push(intToString(userFAccountId));
+
+    let tokenBalances = new Array<String>();
+
+    let accountAFirstTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDA), tokenA.id);
+    let accountASecondTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDA), tokenB.id);
+    let accountAThirdTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDA), bindTokenObj.id);
+    accountAFirstTokenBalance.balance = accountAFirstTokenBalance.balance.plus(transaction.accountAFirstTokenAmountExchange);
+    accountAFirstTokenBalance.save();
+    accountASecondTokenBalance.balance = accountASecondTokenBalance.balance.plus(transaction.accountASecondTokenAmountExchange);
+    accountASecondTokenBalance.save()
+    accountAThirdTokenBalance.balance = accountAThirdTokenBalance.balance.plus(transaction.accountAThirdTokenAmountExchange);
+    accountAThirdTokenBalance.save();
+
+    let accountBFirstTokenBalance = getOrCreateAccountTokenBalance(intToString(transaction.accountIDB), intToString(user1TokenTypeSelection[0]));
+    let accountBSecondTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDB), intToString(user1TokenTypeSelection[1]));
+    accountBFirstTokenBalance.balance = accountBFirstTokenBalance.balance.plus(transaction.accountBFirstTokenAmountExchange);
+    accountBFirstTokenBalance.save();
+    accountBSecondTokenBalance.balance = accountBSecondTokenBalance.balance.plus(transaction.accountBSecondTokenAmountExchange);
+    accountBSecondTokenBalance.save();
+
+    let accountCFirstTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDC), intToString(user2TokenTypeSelection[0]));
+    let accountCSecondTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDC), intToString(user2TokenTypeSelection[1]));
+    accountCFirstTokenBalance.balance = accountCFirstTokenBalance.balance.plus(transaction.accountCFirstTokenAmountExchange);
+    accountCFirstTokenBalance.save();
+    accountCSecondTokenBalance.balance = accountCSecondTokenBalance.balance.plus(transaction.accountCSecondTokenAmountExchange);
+    accountCSecondTokenBalance.save();
+
+    let accountDFirstTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDD), intToString(user3TokenTypeSelection[0]));
+    let accountDSecondTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDD), intToString(user3TokenTypeSelection[1]));
+    accountDFirstTokenBalance.balance = accountDFirstTokenBalance.balance.plus(transaction.accountDFirstTokenAmountExchange);
+    accountDFirstTokenBalance.save();
+    accountDSecondTokenBalance.balance = accountDSecondTokenBalance.balance.plus(transaction.accountDSecondTokenAmountExchange);
+    accountDSecondTokenBalance.save();
+
+    let accountEFirstTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDE), intToString(user4TokenTypeSelection[0]));
+    let accountESecondTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDE), intToString(user4TokenTypeSelection[1]));
+    accountEFirstTokenBalance.balance = accountEFirstTokenBalance.balance.plus(transaction.accountEFirstTokenAmountExchange);
+    accountEFirstTokenBalance.save();
+    accountESecondTokenBalance.balance = accountESecondTokenBalance.balance.plus(transaction.accountESecondTokenAmountExchange);
+    accountESecondTokenBalance.save();
+
+    let accountFFirstTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDF), intToString(user5TokenTypeSelection[0]));
+    let accountFSecondTokenBalance  = getOrCreateAccountTokenBalance(intToString(transaction.accountIDF), intToString(user5TokenTypeSelection[1]));
+    accountFFirstTokenBalance.balance = accountFFirstTokenBalance.balance.plus(transaction.accountFFirstTokenAmountExchange);
+    accountFFirstTokenBalance.save();
+    accountFSecondTokenBalance.balance = accountFSecondTokenBalance.balance.plus(transaction.accountFSecondTokenAmountExchange);
+    accountFSecondTokenBalance.save();
+    
+    tokenBalances.push(accountAFirstTokenBalance.id);
+    tokenBalances.push(accountASecondTokenBalance.id);
+    tokenBalances.push(accountAThirdTokenBalance.id);
+    tokenBalances.push(accountBFirstTokenBalance.id);
+    tokenBalances.push(accountBSecondTokenBalance.id);
+    tokenBalances.push(accountCFirstTokenBalance.id);
+    tokenBalances.push(accountCSecondTokenBalance.id);
+    tokenBalances.push(accountDFirstTokenBalance.id);
+    tokenBalances.push(accountDSecondTokenBalance.id);
+    tokenBalances.push(accountEFirstTokenBalance.id);
+    tokenBalances.push(accountESecondTokenBalance.id);
+    tokenBalances.push(accountFFirstTokenBalance.id);
+    tokenBalances.push(accountFSecondTokenBalance.id);
+
+    let tokenATradeDailyData = getAndUpdateTokenDailyData(tokenA, block.timestamp);
+    let tokenBTradeDailyData = getAndUpdateTokenDailyData(tokenB, block.timestamp);
+    let bindTokenTradeDailyData = getAndUpdateTokenDailyData(bindTokenObj, block.timestamp);
+
+    tokenATradeDailyData.tradedVolume = tokenATradeDailyData.tradedVolume.plus(transaction.accountAFirstTokenAmountExchange);
+    tokenATradeDailyData.save();
+    tokenBTradeDailyData.tradedVolume = tokenBTradeDailyData.tradedVolume.plus(transaction.accountASecondTokenAmountExchange);
+    tokenBTradeDailyData.save();
+    bindTokenTradeDailyData.tradedVolume = bindTokenTradeDailyData.tradedVolume.plus(transaction.accountAThirdTokenAmountExchange);
+    bindTokenTradeDailyData.save();
+
+    transaction.accounts = accounts;
+    transaction.tokenBalances = tokenBalances;
+
     transaction.save();
 
 }

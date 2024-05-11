@@ -5,7 +5,7 @@ import {
   User,
   Proxy
 } from "../../../../generated/schema";
-import { BigInt, Address, Bytes, log } from "@graphprotocol/graph-ts";
+import { BigInt, Address, Bytes, ByteArray, log, ethereum} from "@graphprotocol/graph-ts";
 import {
   extractData,
   extractBigInt,
@@ -272,7 +272,11 @@ export function processWithdrawal(
 
     // Only set the token if it's not null. Could potentially be null on invalid transactions
     transaction.token = tokenCheck != null ? (tokenCheck as Token).id : null;
-
+    const functionInputAsTuple = ByteArray.fromHexString(block.auxiliaryData);
+    const decoded = ethereum.decode(
+      '(uint256, bool, bytes)',
+      Bytes.fromByteArray(functionInputAsTuple)
+    );
     transaction.tokenBalances = tokenBalances;
     transaction.save();
   

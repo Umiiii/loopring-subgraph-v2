@@ -639,11 +639,12 @@ type BatchSpotTrade implements Transaction @entity {
   "Account entity B"
   accountB: Account!
   "Account entity C"
-  accountC: Account!
+  accountC: Account
   "Account entity D"
-  accountD: Account!
+  accountD: Account
   "Account entity E"
-  accountE: Account!
+  accountE: Account
+  accountF: Account
 
   "Token A"
   tokenA: Token!
@@ -660,36 +661,36 @@ type BatchSpotTrade implements Transaction @entity {
   "[RAW L2 DATA] Account ID of account A"
   accountIDA: Int!
   "[RAW L2 DATA] Account ID of account B"
-  accountIDB: Int!
-  accountBFirstTokenID: Int!
-  accountBSecondTokenID: Int!
-  accountBFirstToken: Token!
-  accountBSecondToken: Token!
+  accountIDB: Int
+  accountBFirstTokenID: Int
+  accountBSecondTokenID: Int
+  accountBFirstToken: Token
+  accountBSecondToken: Token
   
   "[RAW L2 DATA] Account ID of account C"
-  accountIDC: Int!
-  accountCFirstTokenID: Int!
-  accountCSecondTokenID: Int!
-  accountCFirstToken: Token!
-  accountCSecondToken: Token!
+  accountIDC: Int
+  accountCFirstTokenID: Int
+  accountCSecondTokenID: Int
+  accountCFirstToken: Token
+  accountCSecondToken: Token
   "[RAW L2 DATA] Account ID of account D"
-  accountIDD: Int!
-  accountDFirstTokenID: Int!
-  accountDSecondTokenID: Int!
-  accountDFirstToken: Token!
-  accountDSecondToken: Token!
+  accountIDD: Int
+  accountDFirstTokenID: Int
+  accountDSecondTokenID: Int
+  accountDFirstToken: Token
+  accountDSecondToken: Token
   "[RAW L2 DATA] Account ID of account E"
-  accountIDE: Int!
-  accountEFirstTokenID: Int!
-  accountESecondTokenID: Int!
-  accountEFirstToken: Token!
-  accountESecondToken: Token!
+  accountIDE: Int
+  accountEFirstTokenID: Int
+  accountESecondTokenID: Int
+  accountEFirstToken: Token
+  accountESecondToken: Token
   "[RAW L2 DATA] Account ID of account F"
-  accountIDF: Int!
-  accountFFirstTokenID: Int!
-  accountFSecondTokenID: Int!
-  accountFFirstToken: Token!
-  accountFSecondToken: Token!
+  accountIDF: Int
+  accountFFirstTokenID: Int
+  accountFSecondTokenID: Int
+  accountFFirstToken: Token
+  accountFSecondToken: Token
 
   accountAFirstTokenAmountExchange: BigInt!
   accountASecondTokenAmountExchange: BigInt!
@@ -705,10 +706,10 @@ type BatchSpotTrade implements Transaction @entity {
   accountFFirstTokenAmountExchange: BigInt!
   accountFSecondTokenAmountExchange: BigInt!
   
-
   tokenBalances: [AccountTokenBalance!]
 
   accounts: [Account!]
+
 }
 
 type AccountUpdate implements Transaction @entity {
